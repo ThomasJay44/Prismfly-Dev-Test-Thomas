@@ -1,0 +1,148 @@
+{% comment %} collection-navigation.liquid {% endcomment %}
+{% schema %}
+{
+  "name": "Collection Navigation",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Default",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  /* Add your custom CSS styles here */
+  .collection-navigation {
+    display: flex; /* Use flexbox to make the collection links appear in one row */
+    justify-content: space-between; /* Spread the links evenly across the container */
+    padding: 0;
+    margin: 0; /* Add margin to remove any default spacing */
+  }
+
+  .collection-navigation a {
+    flex: 1; /* Distribute the available space equally among the buttons */
+    text-align: center;
+    padding: 10px 21px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Add smooth transition effects */
+  }
+
+  .collection-navigation a:hover,
+  .collection-navigation a:focus,
+  .collection-navigation a.active {
+    /* Add the active state for the selected button */
+    background-color: #e0e0e0;
+    border-color: #000; /* Add black border on mouseover/focus */
+  }
+
+  /* Styles for the dropdown on mobile devices */
+  .collection-navigation .dropdown-toggle {
+    display: none;
+    text-align: center;
+    padding: 10px 21px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .collection-navigation .dropdown-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  /* Media query for smaller screens (e.g., mobile devices) */
+  @media (max-width: 768px) {
+    .collection-navigation {
+      flex-direction: column; /* Change to a column layout on smaller screens */
+      align-items: center; /* Center the links vertically in the container */
+    }
+
+    .collection-navigation a {
+      margin: 5px; /* Add some spacing between the buttons */
+      width: 100%; /* Make the buttons fill the container width */
+    }
+
+    /* Show the dropdown toggle on mobile devices */
+    .collection-navigation .dropdown-toggle {
+      display: block;
+      width: 100%;
+    }
+
+    /* Hide the original collection buttons on mobile devices when the dropdown is open */
+    .collection-navigation.show-dropdown .collection-button {
+      display: none;
+    }
+
+    /* Show the dropdown menu on mobile devices when the dropdown toggle is clicked */
+    .collection-navigation.show-dropdown .dropdown-menu {
+      display: flex;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  /* Add your custom JavaScript code here */
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get the "All" button and the dropdown container
+    const allButton = document.getElementById('all'); // Make sure to set the ID of the "All" button to "all"
+    const dropdownMenu = document.querySelector('.collection-navigation .dropdown-menu');
+    const collectionButtons = document.querySelectorAll('.collection-navigation .collection-button');
+
+    if (allButton && dropdownMenu) {
+      // Clone the collection links and append them to the dropdown menu
+      const collectionLinks = document.querySelectorAll('.collection-navigation a');
+      collectionLinks.forEach((link) => {
+        const clonedLink = link.cloneNode(true);
+        clonedLink.classList.remove('active'); // Remove the "active" class from cloned links
+        dropdownMenu.appendChild(clonedLink);
+      });
+
+      // Hide the dropdown menu initially
+      dropdownMenu.style.display = 'none';
+
+      // Add a click event listener to the "All" button to toggle the dropdown
+      allButton.addEventListener('click', function () {
+        const navigation = document.querySelector('.collection-navigation');
+        navigation.classList.toggle('show-dropdown');
+
+        // Close the dropdown menu when any of the collection buttons are clicked
+        if (!navigation.classList.contains('show-dropdown')) {
+          dropdownMenu.style.display = 'none';
+        }
+      });
+
+      // Add click event listeners to collection buttons to close the dropdown menu
+      collectionButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+          const navigation = document.querySelector('.collection-navigation');
+          navigation.classList.remove('show-dropdown');
+          dropdownMenu.style.display = 'none';
+        });
+      });
+    }
+  });
+{% endjavascript %}
+
+{% assign collections_to_show = collections | where: 'published', true %}
+
+<div class="collection-navigation">
+  <div class="dropdown-toggle" id="all">Collections &#9662;</div>
+  <!-- Add the "All" button as a dropdown toggle -->
+  <div class="dropdown-menu">
+    <!-- Add the dropdown menu -->
+    <!-- Dropdown content will be populated dynamically with JavaScript -->
+  </div>
+  {% for collection in collections_to_show %}
+    <a href="{{ collection.url }}" id="{{ collection.handle }}" class="collection-button">{{ collection.title }}</a>
+  {% endfor %}
+</div>

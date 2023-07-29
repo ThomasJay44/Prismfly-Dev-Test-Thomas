@@ -1,0 +1,51 @@
+{% schema %}
+{
+  "name": "Collection Customization",
+  "settings": [
+    {
+      "type": "checkbox",
+      "label": "Show Collection 1",
+      "id": "show_collection_1",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "label": "Show Collection 2",
+      "id": "show_collection_2",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "label": "Show Collection 3",
+      "id": "show_collection_3",
+      "default": true
+    }
+    // Add more checkboxes for other collections if needed
+  ],
+  "presets": [
+    {
+      "name": "Default",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+{% content_for_index %}
+<div class="collection-customization">
+  <h3>Customize Collections</h3>
+  <label>
+    <input type="checkbox" name="show_collection_1" checked>
+    Show Collection 1
+  </label>
+  <label>
+    <input type="checkbox" name="show_collection_2" checked>
+    Show Collection 2
+  </label>
+  <label>
+    <input type="checkbox" name="show_collection_3" checked>
+    Show Collection 3
+  </label>
+  <!-- Add more checkboxes for other collections if needed -->
+</div>
+{% endcontent_for_index %}
